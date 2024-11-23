@@ -1,0 +1,341 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">requests</span>
+<span class="s0">from </span><span class="s1">pprint </span><span class="s0">import </span><span class="s1">pprint</span>
+
+<span class="s2"># extract from Edamam</span>
+<span class="s1">ingredient = input(</span><span class="s3">&quot;What ingredient would you like to use?&quot;</span><span class="s1">)</span>
+<span class="s1">app_id = </span><span class="s3">'973abd68'</span>
+<span class="s1">app_key = </span><span class="s3">'3b20a6a478e9ada14d4b18f9e95c6daa'</span>
+<span class="s1">url = </span><span class="s3">'https://api.edamam.com/search?q={}&amp;app_id={}&amp;app_key={}'</span><span class="s1">.format(ingredient</span><span class="s0">, </span><span class="s1">app_id</span><span class="s0">, </span><span class="s1">app_key)</span>
+<span class="s1">response = requests.get(url)</span>
+<span class="s1">print(response)</span>
+<span class="s1">recipes = response.json()</span>
+<span class="s1">print(recipes)</span>
+<span class="s1">output = recipes[</span><span class="s3">'hits'</span><span class="s1">]</span>
+
+<span class="s1">name_of_recipes = []</span>
+<span class="s1">calories = []</span>
+<span class="s1">cuisine_types = []</span>
+<span class="s1">dish_types = []</span>
+<span class="s1">tags = []</span>
+<span class="s1">ingredients = []</span>
+<span class="s1">instructions = []</span>
+
+<span class="s0">for </span><span class="s1">option </span><span class="s0">in </span><span class="s1">output:</span>
+    <span class="s1">name_of_recipes.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'label'</span><span class="s1">])</span>
+    <span class="s1">calories.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'totalNutrients'</span><span class="s1">][</span><span class="s3">'ENERC_KCAL'</span><span class="s1">][</span><span class="s3">'quantity'</span><span class="s1">])</span>
+    <span class="s1">cuisine_types.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'cuisineType'</span><span class="s1">][</span><span class="s4">0</span><span class="s1">])</span>
+    <span class="s1">dish_types.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'dishType'</span><span class="s1">][</span><span class="s4">0</span><span class="s1">])</span>
+    <span class="s1">tags.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'healthLabels'</span><span class="s1">])</span>
+    <span class="s1">ingredients.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'ingredientLines'</span><span class="s1">])</span>
+    <span class="s1">instructions.append(option[</span><span class="s3">'recipe'</span><span class="s1">][</span><span class="s3">'url'</span><span class="s1">])</span>
+<span class="s1">compiled = list(zip(name_of_recipes</span><span class="s0">, </span><span class="s1">calories</span><span class="s0">, </span><span class="s1">cuisine_types</span><span class="s0">, </span><span class="s1">dish_types</span><span class="s0">, </span><span class="s1">tags</span><span class="s0">, </span><span class="s1">ingredients</span><span class="s0">, </span><span class="s1">instructions))</span>
+<span class="s2"># print(compiled)</span>
+
+
+<span class="s1">criteria = [</span><span class="s3">'calories'</span><span class="s0">, </span><span class="s3">'cuisine type'</span><span class="s0">, </span><span class="s3">'dish type'</span><span class="s0">, </span><span class="s3">'tags'</span><span class="s1">]</span>
+
+<span class="s0">from </span><span class="s1">tkinter </span><span class="s0">import </span><span class="s1">*</span>
+
+<span class="s1">ws = Tk()</span>
+<span class="s1">ws.title(</span><span class="s3">'Choose Criteria'</span><span class="s1">)</span>
+<span class="s1">ws.geometry(</span><span class="s3">'400x300'</span><span class="s1">)</span>
+<span class="s1">ws.config(bg=</span><span class="s3">'#F2B90C'</span><span class="s1">)</span>
+
+
+<span class="s0">def </span><span class="s1">display_selected(choice):</span>
+    <span class="s1">choice = variable.get()</span>
+    <span class="s1">print(choice)</span>
+    <span class="s0">if </span><span class="s1">choice == </span><span class="s3">'calories'</span><span class="s1">:</span>
+        <span class="s1">caloriepreference = input(</span><span class="s3">'Would you like a low or high calorie recipe?'</span><span class="s1">).lower()</span>
+        <span class="s1">valid_answer = [</span><span class="s3">'high'</span><span class="s0">, </span><span class="s3">'low'</span><span class="s1">]</span>
+        <span class="s0">while </span><span class="s1">caloriepreference </span><span class="s0">not in </span><span class="s1">valid_answer:</span>
+            <span class="s1">print(</span><span class="s3">'Not a valid option, try again'</span><span class="s1">)</span>
+            <span class="s1">caloriepreference = input(</span><span class="s3">'Would you like a low or high calorie recipe?'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">caloriepreference == </span><span class="s3">'high'</span><span class="s1">:</span>
+            <span class="s1">target_index = calories.index(max(calories))</span>
+            <span class="s1">print(</span>
+                <span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">'</span>
+                <span class="s3">'Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">]))</span>
+        <span class="s0">elif </span><span class="s1">caloriepreference == </span><span class="s3">'low'</span><span class="s1">:</span>
+            <span class="s1">target_index = calories.index(min(calories))</span>
+            <span class="s1">print(</span>
+                <span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">'</span>
+                <span class="s3">'Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">]))</span>
+        <span class="s1">save = input(</span><span class="s3">'Would you like to save the result?'</span><span class="s1">)</span>
+        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                        <span class="s3">'Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+            <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+            <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+            <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+        <span class="s0">if </span><span class="s1">save == </span><span class="s3">'yes' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'y' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'Yes'</span><span class="s1">:</span>
+            <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                <span class="s1">recipe_file.write(chosen_recipe)</span>
+    <span class="s0">elif </span><span class="s1">choice == </span><span class="s3">'cuisine type'</span><span class="s1">:</span>
+        <span class="s1">pprint(cuisine_types)</span>
+        <span class="s1">cuisine_type = input(</span><span class="s3">'Pick a cuisine'</span><span class="s1">).lower()</span>
+        <span class="s0">while </span><span class="s1">cuisine_type </span><span class="s0">not in </span><span class="s1">cuisine_types:</span>
+            <span class="s1">print(</span><span class="s3">'No recipes with your chosen ingredient exist from the cuisine type you have selected. Try again.'</span><span class="s1">)</span>
+            <span class="s1">cuisine_type = input(</span><span class="s3">'Pick a cuisine'</span><span class="s1">)</span>
+        <span class="s1">target_index = [i </span><span class="s0">for </span><span class="s1">i</span><span class="s0">, </span><span class="s1">x </span><span class="s0">in </span><span class="s1">enumerate(cuisine_types) </span><span class="s0">if </span><span class="s1">x == cuisine_type]</span>
+        <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'There are {} recipes to choose from:'</span><span class="s1">.format(len(target_index)))</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'Here is your recipe:'</span><span class="s1">)</span>
+        <span class="s1">number = </span><span class="s4">1</span>
+        <span class="s1">d = []</span>
+        <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+            <span class="s1">print(</span>
+                <span class="s3">&quot;{}. Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">&quot;</span>
+                <span class="s3">&quot;Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}&quot;</span><span class="s1">.format(</span>
+                    <span class="s1">number</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">]))</span>
+            <span class="s1">d.append(index)</span>
+            <span class="s1">number = number + </span><span class="s4">1</span>
+        <span class="s1">save = input(</span><span class="s3">'Would you like to save any of the results?'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">save == </span><span class="s3">'yes' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'y' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'Yes'</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                <span class="s1">which = input(</span><span class="s3">'Save all or some?'</span><span class="s1">)</span>
+                <span class="s0">if </span><span class="s1">which == </span><span class="s3">'All' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'all'</span><span class="s1">:</span>
+                    <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                        <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+                <span class="s0">elif </span><span class="s1">which == </span><span class="s3">'some' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'Some'</span><span class="s1">:</span>
+                    <span class="s1">number_recipes = input(</span><span class="s3">'Enter the numbers of the recipes you would like to save'</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = number_recipes.split(</span><span class="s3">' '</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = map(int</span><span class="s0">, </span><span class="s1">number_recipes)</span>
+                    <span class="s1">number_recipes = list(number_recipes)</span>
+                    <span class="s0">if </span><span class="s1">len(number_recipes) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                        <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s4">0</span><span class="s0">,</span><span class="s1">len(number_recipes)):</span>
+                            <span class="s1">index_in_d = number_recipes[i] - </span><span class="s4">1</span>
+                            <span class="s1">target_index = d[index_in_d]</span>
+                            <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                            <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                            <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                            <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                                <span class="s1">recipe_file.write(chosen_recipe)</span>
+                    <span class="s0">else</span><span class="s1">:</span>
+                        <span class="s1">index_in_d = number_recipes[</span><span class="s4">0</span><span class="s1">]-</span><span class="s4">1</span>
+                        <span class="s1">target_index = d[index_in_d]</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+            <span class="s0">else</span><span class="s1">:</span>
+                <span class="s1">target_index = target_index[</span><span class="s4">0</span><span class="s1">]</span>
+                <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                    <span class="s1">recipe_file.write(chosen_recipe)</span>
+    <span class="s0">elif </span><span class="s1">choice == </span><span class="s3">'dish type'</span><span class="s1">:</span>
+        <span class="s1">pprint(dish_types)</span>
+        <span class="s1">dish_type = input(</span><span class="s3">'Pick a dish type'</span><span class="s1">).lower()</span>
+        <span class="s0">while </span><span class="s1">dish_type </span><span class="s0">not in </span><span class="s1">dish_types:</span>
+            <span class="s1">print(</span><span class="s3">'No recipes with your chosen ingredient exist from the dish type you have selected. Try again.'</span><span class="s1">)</span>
+            <span class="s1">dish_type = input(</span><span class="s3">'Pick a dish type'</span><span class="s1">)</span>
+        <span class="s1">target_index = [i </span><span class="s0">for </span><span class="s1">i</span><span class="s0">, </span><span class="s1">x </span><span class="s0">in </span><span class="s1">enumerate(dish_types) </span><span class="s0">if </span><span class="s1">x == dish_type]</span>
+        <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'There are {} recipes to choose from:'</span><span class="s1">.format(len(target_index)))</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'Here is your recipe:'</span><span class="s1">)</span>
+        <span class="s1">number = </span><span class="s4">1</span>
+        <span class="s1">d = []</span>
+        <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+            <span class="s1">print(</span>
+                <span class="s3">'{}. Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">'</span>
+                <span class="s3">'Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">number</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">]))</span>
+            <span class="s1">d.append(index)</span>
+            <span class="s1">number = number + </span><span class="s4">1</span>
+        <span class="s1">save = input(</span><span class="s3">'Would you like to save any of the results?'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">save == </span><span class="s3">'yes' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'y' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'Yes'</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                <span class="s1">which = input(</span><span class="s3">'Save all or some?'</span><span class="s1">)</span>
+                <span class="s0">if </span><span class="s1">which == </span><span class="s3">'All' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'all'</span><span class="s1">:</span>
+                    <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                        <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+                <span class="s0">elif </span><span class="s1">which == </span><span class="s3">'some' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'Some'</span><span class="s1">:</span>
+                    <span class="s1">number_recipes = input(</span><span class="s3">'Enter the numbers of the recipes you would like to save'</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = number_recipes.split(</span><span class="s3">' '</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = map(int</span><span class="s0">, </span><span class="s1">number_recipes)</span>
+                    <span class="s1">number_recipes = list(number_recipes)</span>
+                    <span class="s0">if </span><span class="s1">len(number_recipes) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                        <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s4">0</span><span class="s0">, </span><span class="s1">len(number_recipes)):</span>
+                            <span class="s1">index_in_d = number_recipes[i] - </span><span class="s4">1</span>
+                            <span class="s1">target_index = d[index_in_d]</span>
+                            <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                            <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                            <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                            <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                                <span class="s1">recipe_file.write(chosen_recipe)</span>
+                    <span class="s0">else</span><span class="s1">:</span>
+                        <span class="s1">index_in_d = number_recipes[</span><span class="s4">0</span><span class="s1">] - </span><span class="s4">1</span>
+                        <span class="s1">target_index = d[index_in_d]</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+            <span class="s0">else</span><span class="s1">:</span>
+                <span class="s1">target_index = target_index[</span><span class="s4">0</span><span class="s1">]</span>
+                <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                    <span class="s1">recipe_file.write(chosen_recipe)</span>
+
+    <span class="s0">elif </span><span class="s1">choice == </span><span class="s3">'tags'</span><span class="s1">:</span>
+        <span class="s1">pprint(tags)</span>
+        <span class="s1">tag = input(</span><span class="s3">'Pick a keyword describing your recipe'</span><span class="s1">)</span>
+        <span class="s1">exists = </span><span class="s4">0</span>
+        <span class="s0">while </span><span class="s1">exists == </span><span class="s4">0</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">p </span><span class="s0">in </span><span class="s1">range(len(tags)):</span>
+                <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(len(tags[p])):</span>
+                    <span class="s2"># print(i)</span>
+                    <span class="s0">if </span><span class="s1">tag == tags[p][i]:</span>
+                        <span class="s1">exists = </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">exists == </span><span class="s4">0</span><span class="s1">:</span>
+                <span class="s1">print(</span><span class="s3">'No recipes with your chosen ingredient exist from the keyword you have selected. Try again.'</span><span class="s1">)</span>
+                <span class="s1">tag = input(</span><span class="s3">'Pick a keyword describing your recipe'</span><span class="s1">)</span>
+        <span class="s1">target_index = []</span>
+        <span class="s0">for </span><span class="s1">each </span><span class="s0">in </span><span class="s1">tags:</span>
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(len(each)):</span>
+                <span class="s0">if </span><span class="s1">tag == each[i]:</span>
+                    <span class="s1">target_index.append(tags.index(each))</span>
+        <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'There are {} recipes to choose from:'</span><span class="s1">.format(len(target_index)))</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s3">'Here is your recipe:'</span><span class="s1">)</span>
+        <span class="s1">number = </span><span class="s4">1</span>
+        <span class="s1">d = []</span>
+        <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+            <span class="s1">print(</span>
+                <span class="s3">'{}. Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">number</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">]))</span>
+            <span class="s1">d.append(index)</span>
+            <span class="s1">number = number + </span><span class="s4">1</span>
+        <span class="s1">save = input(</span><span class="s3">'Would you like to save any of the results?'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">save == </span><span class="s3">'yes' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'y' </span><span class="s0">or </span><span class="s1">save == </span><span class="s3">'Yes'</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">len(target_index) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                <span class="s1">which = input(</span><span class="s3">'Save all or some?'</span><span class="s1">)</span>
+                <span class="s0">if </span><span class="s1">which == </span><span class="s3">'All' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'all'</span><span class="s1">:</span>
+                    <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">target_index:</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                        <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+                <span class="s0">elif </span><span class="s1">which == </span><span class="s3">'some' </span><span class="s0">or </span><span class="s1">which == </span><span class="s3">'Some'</span><span class="s1">:</span>
+                    <span class="s1">number_recipes = input(</span><span class="s3">'Enter the numbers of the recipes you would like to save'</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = number_recipes.split(</span><span class="s3">' '</span><span class="s1">)</span>
+                    <span class="s1">number_recipes = map(int</span><span class="s0">, </span><span class="s1">number_recipes)</span>
+                    <span class="s1">number_recipes = list(number_recipes)</span>
+                    <span class="s0">if </span><span class="s1">len(number_recipes) &gt; </span><span class="s4">1</span><span class="s1">:</span>
+                        <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s4">0</span><span class="s0">, </span><span class="s1">len(number_recipes)):</span>
+                            <span class="s1">index_in_d = number_recipes[i] - </span><span class="s4">1</span>
+                            <span class="s1">target_index = d[index_in_d]</span>
+                            <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {' </span><span class="s1">\</span>
+                                            <span class="s3">'} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                            <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                                <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                            <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                                <span class="s1">recipe_file.write(chosen_recipe)</span>
+                    <span class="s0">else</span><span class="s1">:</span>
+                        <span class="s1">index_in_d = number_recipes[</span><span class="s4">0</span><span class="s1">] - </span><span class="s4">1</span>
+                        <span class="s1">target_index = d[index_in_d]</span>
+                        <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                        <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                            <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                        <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                            <span class="s1">recipe_file.write(chosen_recipe)</span>
+            <span class="s0">else</span><span class="s1">:</span>
+                <span class="s1">target_index = target_index[</span><span class="s4">0</span><span class="s1">]</span>
+                <span class="s1">chosen_recipe = </span><span class="s3">'Recipe Name: {} </span><span class="s0">\n </span><span class="s3">Calories: {} kcal </span><span class="s0">\n </span><span class="s3">Cuisine Type: {} </span><span class="s0">\n </span><span class="s3">Dish Type: {} </span><span class="s0">\n </span><span class="s3">' </span><span class="s1">\</span>
+                                <span class="s3">'Keywords: {} </span><span class="s0">\n </span><span class="s3">Ingredients: {} </span><span class="s0">\n </span><span class="s3">Instructions URL: {}'</span><span class="s1">.format(</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">0</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">2</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">3</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">4</span><span class="s1">]</span><span class="s0">, </span><span class="s1">compiled[target_index][</span><span class="s4">5</span><span class="s1">]</span><span class="s0">,</span>
+                    <span class="s1">compiled[target_index][</span><span class="s4">6</span><span class="s1">])</span>
+                <span class="s0">with </span><span class="s1">open(</span><span class="s3">'{}.txt'</span><span class="s1">.format(compiled[target_index][</span><span class="s4">0</span><span class="s1">])</span><span class="s0">, </span><span class="s3">'w'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">recipe_file:</span>
+                    <span class="s1">recipe_file.write(chosen_recipe)</span>
+
+
+<span class="s2"># setting variable for Integers</span>
+<span class="s1">variable = StringVar()</span>
+<span class="s2"># creating widget</span>
+<span class="s1">dropdown = OptionMenu(</span>
+    <span class="s1">ws</span><span class="s0">,</span>
+    <span class="s1">variable</span><span class="s0">,</span>
+    <span class="s1">*criteria</span><span class="s0">,</span>
+    <span class="s1">command=display_selected</span>
+<span class="s1">)</span>
+<span class="s2"># positioning widget</span>
+<span class="s1">dropdown.pack(expand=</span><span class="s0">True</span><span class="s1">)</span>
+<span class="s2"># infinite loop</span>
+<span class="s1">ws.mainloop()</span>
+</pre>
+</body>
+</html>
